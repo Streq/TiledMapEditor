@@ -1,4 +1,3 @@
-define(function(require){
-    let dom = require("helper/dom");
-    dom.getHello();
+define(["helper/dom"],function(dom){
+    dom.set("we","<div>jaja</div>");
 });
