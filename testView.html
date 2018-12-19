@@ -1,0 +1,44 @@
+<html>
+<head>
+    <style>
+        .column {
+            float: left;
+        }
+
+        .left {
+            width: 50%;
+        }
+
+        .right {
+            width: 50%;
+        }
+
+        .row:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        .canvasColumn {
+            max-width: 400px;
+        }
+
+        .inputColumn {
+            width: 35%;
+        }
+    </style>
+</head>
+
+<body>
+    <div app-id="root">
+        <div class="row">
+            <div class="column canvasColumn">
+                <canvas app-id="canvas" width="400" height="400" tabindex="1" style="background-color: black;"></canvas>
+                <canvas app-id="canvas2" width="400" height="400" tabindex="1" style="background-color: black;"></canvas>
+            </div>
+        </div>
+    </div>
+    <script data-main="src/index.js" src="src/require.js"></script>
+</body>
+
+</html>

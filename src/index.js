@@ -10,4 +10,4 @@ requirejs.config({
         dep: '../dependencies'
     }
 });
-requirejs(["main"]);
+requirejs(["test/view"]);
