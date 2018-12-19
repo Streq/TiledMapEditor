@@ -1,4 +1,4 @@
-requirejs.config({
+require = {
     //By default load any module IDs from src/app
     baseUrl: 'src/app',
     //except, if the module ID starts with "dep",
@@ -9,5 +9,4 @@ requirejs.config({
     paths: {
         dep: '../dependencies'
     }
-});
-requirejs(["test/view"]);
+};
