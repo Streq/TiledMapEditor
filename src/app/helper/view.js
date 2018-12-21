@@ -24,6 +24,7 @@ define(function(){
             
             
             //clip viewport
+            ctx.beginPath();
             ctx.rect(w*vp.x, h*vp.y, w*vp.w, h*vp.h);
             ctx.clip();
             

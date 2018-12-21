@@ -30,30 +30,96 @@ requirejs(["helper/dom","helper/view"],function(dom,View){
     
     /**@param {HTMLCanvasElement} canvas1*/
     let canvas1 = dom.get("canvas");
-    let ctx1 = canvas1.getContext("2d");
-    
     let canvas2 = dom.get("canvas2");
+    
+    let ctx1 = canvas1.getContext("2d");
     let ctx2 = canvas2.getContext("2d");
     
-    let view = new View();
-    view.center.x = 200;
-    view.center.y = 200;
-    view.halfDimensions.x = 400;
-    view.halfDimensions.y = 400;
-    view.viewPort.x = 0.25;
-    view.viewPort.y = 0.25;
-    view.viewPort.w = 0.5;
-    view.viewPort.h = 0.5;
     
-    view.applyTransform(ctx2);
-    
-    [ctx1,ctx2].forEach((ctx)=>{
+    let draw = (ctx)=>{
         ctx.fillStyle = "blue";
         ctx.fillRect(-100000,-100000,1000000+ctx.canvas.height,1000000+ctx.canvas.width);
         blocks.forEach((each)=>{
             ctx.fillStyle = each[4];
             ctx.fillRect(each[0],each[1],each[2],each[3]);
         });
-    });
+    };
+    
+//*/
+    (()=>{
+        let view = new View();
+        view.center.x = 200;
+        view.center.y = 200;
+        view.halfDimensions.x = 400;
+        view.halfDimensions.y = 400;
+        view.viewPort.x = 0.5;
+        view.viewPort.y = 0.5;
+        view.viewPort.w = 0.5;
+        view.viewPort.h = 0.5;
+        
+        ctx2.save();
+        view.applyTransform(ctx2);
+        draw(ctx2);
+        ctx2.restore();
+        
+    })();/**/
+    
+//*/
+    (()=>{
+        let view = new View();
+        view.center.x = 200;
+        view.center.y = 200;
+        view.halfDimensions.x = 400;
+        view.halfDimensions.y = 400;
+        view.viewPort.x = 0.0;
+        view.viewPort.y = 0.5;
+        view.viewPort.w = 0.5;
+        view.viewPort.h = 0.5;
+
+        ctx2.save();
+        view.applyTransform(ctx2);
+        draw(ctx2);
+        ctx2.restore();
+        
+    })();/**/
+//*/
+    (()=>{
+        let view = new View();
+        view.center.x = 200;
+        view.center.y = 200;
+        view.halfDimensions.x = 400;
+        view.halfDimensions.y = 400;
+        view.viewPort.x = 0.5;
+        view.viewPort.y = 0.0;
+        view.viewPort.w = 0.5;
+        view.viewPort.h = 0.5;
+
+        ctx2.save();
+        view.applyTransform(ctx2);
+        draw(ctx2);
+        ctx2.restore();
+    })();/**/
+//*/
+    (()=>{
+        let ctx2 = canvas2.getContext("2d");
+        ctx2.restore();
+        let view = new View();
+        view.center.x = 200;
+        view.center.y = 200;
+        view.halfDimensions.x = 400;
+        view.halfDimensions.y = 400;
+        view.viewPort.x = 0.;
+        view.viewPort.y = 0.;
+        view.viewPort.w = 0.5;
+        view.viewPort.h = 0.5;
+
+        ctx2.save();
+        view.applyTransform(ctx2);
+        draw(ctx2);
+        ctx2.restore();
+        
+    })();/**/
+    
+    draw(ctx1);
     
 });

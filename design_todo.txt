@@ -1,0 +1,32 @@
+Data -> {
+	//user defined info
+}
+Map -> {
+	data: 		Data,
+	layers:		[Layer]
+}
+Instance -> {
+	position: 	Vector, 
+	scale:		Vector, 
+	object:		Object
+}
+Layer -> {
+	data:		Data,
+	instances:	[Instance]
+}
+Sprite -> {
+	src:		Image, 
+	rect:		Rect
+}
+Object -> {
+	data:		Data,
+	offset:		Vector,
+	dimensions:	Vector,
+	sprite:		Sprite|Color 
+}
+Map editor -> {
+	map:		Map
+	view:		View
+	context:	Context
+	dom:		Dom
+}
