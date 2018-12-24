@@ -7,6 +7,9 @@ require = {
     //never includes a ".js" extension since
     //the paths config could be for a directory.
     paths: {
-        dep: '../dependencies'
+        dep: '../dependencies',
+		//helper: '../helper',
+		test: '../test'
+		
     }
 };

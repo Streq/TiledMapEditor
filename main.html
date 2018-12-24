@@ -20,7 +20,7 @@
         }
 
         .canvasColumn {
-            max-width: 400px;
+            max-width: 600px;
         }
 
         .inputColumn {
@@ -30,29 +30,6 @@
 </head>
 
 <body>
-    <div app-id="root">
-        <div class="row">
-            <div class="column canvasColumn">
-                <canvas app-id="canvas" width="400" height="400" tabindex="1" style="background-color: black;"></canvas>
-            </div>
-            <div class="column inputColumn">
-                <select app-id="object"></select>
-                <select app-id="tool"></select>
-                <input app-id="gridSize" type="number" placeholder="grid size">
-                <input app-id="zoom" type="number" placeholder="zoom">
-                <div class="row">
-                    <input app-id="viewPosX" type="number" placeholder="X" class="column" style="width:83px;">
-                    <input app-id="viewPosY" type="number" placeholder="Y" class="column" style="width:82px;">
-                </div>
-                <input app-id="cameraSpeed" type="number" placeholder="camera speed">
-                <button app-id="export">Export</button>
-                <button app-id="import">Import</button>
-                <br>
-                <textarea app-id="exporttext"></textarea>
-            </div>
-            <br>
-        </div>
-    </div>
     <script src="src/require.config.js"></script>
     <script src="src/require.js"></script>
     <script>requirejs(["main"]);</script>

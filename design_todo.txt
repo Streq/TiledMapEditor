@@ -24,9 +24,15 @@ Object -> {
 	dimensions:	Vector,
 	sprite:		Sprite|Color 
 }
-Map editor -> {
+MapEditor -> {
 	map:		Map
-	view:		View
+	tileSet:	[Object]
 	context:	Context
 	dom:		Dom
+}
+
+Context -> {
+	view:		View,
+	gridSize:	Vector
+	
 }
