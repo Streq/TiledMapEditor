@@ -1,4 +1,4 @@
-define(function(){
+define(["helper/transform2d"],function(Transform2D){
     class View{
         constructor(options){
             options = options || 
@@ -20,33 +20,52 @@ define(function(){
                   vp = this.viewPort,
                   c  = this.center,
                   hd = this.halfDimensions;
-            //*
-            
-            
             //clip viewport
             ctx.beginPath();
             ctx.rect(w*vp.x, h*vp.y, w*vp.w, h*vp.h);
             ctx.clip();
             
-            //scale view
-            let sx = vp.w*w/(hd.x*2);
-            let sy = vp.h*h/(hd.y*2);
+            //move to viewport
+            ctx.translate(w*vp.x, h*vp.y);
+            //move to view center
+            ctx.translate(c.x,c.y);
+            //move to top left corner
+            ctx.translate(-hd.x,-hd.y);
             
-            ctx.scale(sx, sy);
+            ctx.scale(vp.h, vp.w);
+            //ctx.scale(w/(hd.x*2), h/(hd.y*2));
             
-            //move to view
-            //World units so no division by scale
-            ctx.translate(-c.x + hd.x, -c.y + hd.y);
-            //canvas units so division by scale
-            ctx.translate(+w*vp.x/sx, +h*vp.y/sy);
+            //scale around it
             
-            //ctx.translate(-c.x + w*vp.x, -c.y + w*vp.y);
             
-            /**/
             
             
         }
-        
+        getWorldTransform(ctx){
+            const w  = ctx.canvas.width, 
+                  h  = ctx.canvas.height, 
+                  c  = this.center,
+                  hd = this.halfDimensions;
+            
+            let ret = new Transform2D();
+            //move to view in World units so no division by scale
+            ret.translate(-c.x + hd.x, -c.y + hd.y);
+            //scale view
+            ret.scale(w/(hd.x*2), h/(hd.y*2));
+            return ret;
+        }
+        getViewPortTransform(ctx){
+            const w  = ctx.canvas.width, 
+                  h  = ctx.canvas.height, 
+                  vp = this.viewPort;
+            
+            let ret = new Transform2D();
+            //move to viewposrt
+            ret.translate(vp.x*w,vp.y*h);
+            //scale to viewport
+            ret.scale(vp.w, vp.h);
+            return ret;
+        }
     }
     return View;
 });

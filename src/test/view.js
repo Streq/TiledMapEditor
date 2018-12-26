@@ -50,10 +50,10 @@ requirejs(["helper/dom","helper/view"],function(dom,View){
         let view = new View();
         view.center.x = 200;
         view.center.y = 200;
-        view.halfDimensions.x = 400;
-        view.halfDimensions.y = 400;
-        view.viewPort.x = 0.5;
-        view.viewPort.y = 0.5;
+        view.halfDimensions.x = 300;
+        view.halfDimensions.y = 300;
+        view.viewPort.x = 0.0;
+        view.viewPort.y = 0.0;
         view.viewPort.w = 0.5;
         view.viewPort.h = 0.5;
         
@@ -71,8 +71,8 @@ requirejs(["helper/dom","helper/view"],function(dom,View){
         view.center.y = 200;
         view.halfDimensions.x = 400;
         view.halfDimensions.y = 400;
-        view.viewPort.x = 0.0;
-        view.viewPort.y = 0.5;
+        view.viewPort.x = 0.5;
+        view.viewPort.y = 0.0;
         view.viewPort.w = 0.5;
         view.viewPort.h = 0.5;
 
@@ -85,12 +85,12 @@ requirejs(["helper/dom","helper/view"],function(dom,View){
 //*/
     (()=>{
         let view = new View();
-        view.center.x = 200;
-        view.center.y = 200;
+        view.center.x = 400;
+        view.center.y = 400;
         view.halfDimensions.x = 400;
         view.halfDimensions.y = 400;
-        view.viewPort.x = 0.5;
-        view.viewPort.y = 0.0;
+        view.viewPort.x = 0.0;
+        view.viewPort.y = 0.5;
         view.viewPort.w = 0.5;
         view.viewPort.h = 0.5;
 
@@ -104,12 +104,12 @@ requirejs(["helper/dom","helper/view"],function(dom,View){
         let ctx2 = canvas2.getContext("2d");
         ctx2.restore();
         let view = new View();
-        view.center.x = 200;
-        view.center.y = 200;
+        view.center.x = 0;
+        view.center.y = 0;
         view.halfDimensions.x = 400;
         view.halfDimensions.y = 400;
-        view.viewPort.x = 0.;
-        view.viewPort.y = 0.;
+        view.viewPort.x = 0.5;
+        view.viewPort.y = 0.5;
         view.viewPort.w = 0.5;
         view.viewPort.h = 0.5;
 

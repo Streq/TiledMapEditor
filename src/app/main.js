@@ -40,15 +40,17 @@ requirejs(["map-editor",
 			this.offset = offset;
 		}
 		render(ctx, view) {
-			let gs = this.size,
+			let tf = view.getWorldTransform(ctx),
+                gs = this.size * tf.matrix[0],
 				canvas = ctx.canvas,
 				width = view.halfDimensions.x*2,
 				height = view.halfDimensions.y*2,
 				x = Math.floor(view.center.x - view.halfDimensions.x),
-				y = Math.floor(view.center.y - view.halfDimensions.y),
-				m = {x:0,y:0};//data.input.mousepos && new vector(Math.floor(data.input.mousepos.x), data.input.mousepos.y);
+				y = Math.floor(view.center.y - view.halfDimensions.y);
+                //m = {x:0,y:0};//data.input.mousepos && new vector(Math.floor(data.input.mousepos.x), data.input.mousepos.y);
 			ctx.save();
-			ctx.translate(-width/2-Math2.mod(x, gs), -height/2-Math2.mod(y, gs));
+            
+			ctx.translate(Math2.mod(x, gs),Math2.mod(y, gs));
 			if (gs > 1) {
 				let columns = width / gs,
 					rows = height / gs,
@@ -73,7 +75,7 @@ requirejs(["map-editor",
 			this.root = template.cloneNode(true);
 			this.grid = new Grid(16, 0);
 			this.map = [];
-			this.view = new View({center:{x:0, y:0},halfDimensions:{x:300, y:200},viewPort:{x:0, y:0, w:1, h:1}});
+			this.view = new View({center:{x:0, y:0},halfDimensions:{x:75, y:50},viewPort:{x:0, y:0, w:1, h:1}});
 		}
 
 
@@ -113,8 +115,9 @@ requirejs(["map-editor",
 							ctx.fillRect(e.x, e.y, e.w, e.h);
 						}
 					);
-					this.grid.render(ctx,view);
 					ctx.restore();
+                    
+					this.grid.render(ctx,view);
 				}
 			);
 			/**@type {HTMLCanvasElement}*/
