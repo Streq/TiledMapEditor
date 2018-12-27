@@ -20,26 +20,16 @@ define(["helper/transform2d"],function(Transform2D){
                   vp = this.viewPort,
                   c  = this.center,
                   hd = this.halfDimensions;
-            //clip viewport
-            ctx.beginPath();
+           //clip viewport
+			ctx.beginPath();
             ctx.rect(w*vp.x, h*vp.y, w*vp.w, h*vp.h);
             ctx.clip();
+			
+			let vptf = this.getViewPortTransform(ctx);
+			let wtf = this.getWorldTransform(ctx);
             
-            //move to viewport
-            ctx.translate(w*vp.x, h*vp.y);
-            //move to view center
-            ctx.translate(c.x,c.y);
-            //move to top left corner
-            ctx.translate(-hd.x,-hd.y);
-            
-            ctx.scale(vp.h, vp.w);
-            //ctx.scale(w/(hd.x*2), h/(hd.y*2));
-            
-            //scale around it
-            
-            
-            
-            
+			let tf = vptf.combine.apply(vptf, wtf.matrix);
+			ctx.transform.apply(ctx,tf.matrix);
         }
         getWorldTransform(ctx){
             const w  = ctx.canvas.width, 
@@ -48,10 +38,10 @@ define(["helper/transform2d"],function(Transform2D){
                   hd = this.halfDimensions;
             
             let ret = new Transform2D();
-            //move to view in World units so no division by scale
-            ret.translate(-c.x + hd.x, -c.y + hd.y);
             //scale view
             ret.scale(w/(hd.x*2), h/(hd.y*2));
+            //move to view in World units so no division by scale
+            ret.translate(-c.x + hd.x, -c.y + hd.y);
             return ret;
         }
         getViewPortTransform(ctx){
@@ -60,10 +50,10 @@ define(["helper/transform2d"],function(Transform2D){
                   vp = this.viewPort;
             
             let ret = new Transform2D();
-            //move to viewposrt
-            ret.translate(vp.x*w,vp.y*h);
             //scale to viewport
-            ret.scale(vp.w, vp.h);
+           	ret.scale(vp.w,vp.w);
+			//move to viewport in canvas units so divide to scale
+			ret.translate(vp.x*w/vp.w, vp.y*h/vp.h);
             return ret;
         }
     }
