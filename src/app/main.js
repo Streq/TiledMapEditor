@@ -40,22 +40,22 @@ requirejs(["map-editor",
 			this.offset = offset;
 		}
 		render(ctx, view) {
-			let tf = view.getWorldTransform(ctx),
-                gs = this.size * tf.matrix[0],
+			let gs = this.size*view.scale,
 				canvas = ctx.canvas,
-				width = view.halfDimensions.x*2,
-				height = view.halfDimensions.y*2,
-				x = Math.floor(view.center.x - view.halfDimensions.x),
-				y = Math.floor(view.center.y - view.halfDimensions.y);
+				width = canvas.width,
+				height = canvas.height,
+				x = view.x*view.scale,
+				y = view.y*view.scale;
                 //m = {x:0,y:0};//data.input.mousepos && new vector(Math.floor(data.input.mousepos.x), data.input.mousepos.y);
 			ctx.save();
-            
-			ctx.translate(Math2.mod(x, gs),Math2.mod(y, gs));
+           	x = Math.floor(-Math2.mod(x, gs));
+			y = Math.floor(-Math2.mod(y, gs));
+			
 			if (gs > 1) {
 				let columns = width / gs,
 					rows = height / gs,
 					i;
-
+				ctx.translate(x,y);
 				ctx.fillStyle = dotLineStyle;
 				for (i = 0; i < rows + 1; ++i) {
 					ctx.fillRect(-gs, i * gs, width + gs * 2, 1);
@@ -73,9 +73,10 @@ requirejs(["map-editor",
 	class Editor {
 		constructor() {
 			this.root = template.cloneNode(true);
-			this.grid = new Grid(16, 0);
+			this.grid = new Grid(32, 0);
 			this.map = [];
-			this.view = new View({center:{x:0, y:0},halfDimensions:{x:75, y:50},viewPort:{x:0, y:0, w:1, h:1}});
+			this.view = {x:0,y:0,scale:1};
+			//this.view = new View({center:{x:0, y:0},halfDimensions:{x:600, y:400},viewPort:{x:0, y:0, w:1, h:1}});
 		}
 
 
@@ -107,9 +108,9 @@ requirejs(["map-editor",
 						view = this.view;
 					ctx.clearRect(0, 0, canvas.width, canvas.height);
 					ctx.save();
-					view.applyTransform(ctx);
+					ctx.scale(view.scale,view.scale);
+					ctx.translate(-view.x,-view.y);
 					ctx.fillStyle = "blue";
-
 					this.map.forEach(
 						(e) => {
 							ctx.fillRect(e.x, e.y, e.w, e.h);

@@ -56,6 +56,11 @@ define(["helper/transform2d"],function(Transform2D){
 			ret.translate(vp.x*w/vp.w, vp.y*h/vp.h);
             return ret;
         }
+		
+		getFullTransform(ctx){
+			let vp = this.getViewPortTransform(ctx);
+			return vp.combine.apply(vp,this.getWorldTransform(ctx).matrix);
+		}
     }
     return View;
 });

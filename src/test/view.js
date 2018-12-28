@@ -50,6 +50,24 @@ requirejs(["helper/dom","helper/view"],function(dom,View){
     };
     
 //*/
+	function drawFrame(ctx2,view){
+		let w = ctx2.canvas.width,
+			h = ctx2.canvas.height,
+			vp = view.viewPort;
+		
+		let frame = {
+			x:vp.x*w,
+			y:vp.y*h,
+			w:vp.w*w,
+			h:vp.h*h
+		}
+		ctx2.save();
+		ctx2.strokeStyle="black";
+		ctx2.beginPath();
+		ctx2.rect(frame.x,frame.y,frame.w,frame.h);
+        ctx2.stroke();
+		ctx2.restore();
+	}
     (()=>{
         let view = new View();
         view.center.x = 200;
@@ -65,6 +83,7 @@ requirejs(["helper/dom","helper/view"],function(dom,View){
         view.applyTransform(ctx2);
         draw(ctx2);
         ctx2.restore();
+		drawFrame(ctx2,view);
         
     })();/**/
     
@@ -84,6 +103,7 @@ requirejs(["helper/dom","helper/view"],function(dom,View){
         view.applyTransform(ctx2);
         draw(ctx2);
         ctx2.restore();
+		drawFrame(ctx2,view);
         
     })();/**/
 //*/
@@ -101,7 +121,8 @@ requirejs(["helper/dom","helper/view"],function(dom,View){
         ctx2.save();
         view.applyTransform(ctx2);
         draw(ctx2);
-        ctx2.restore();
+		ctx2.restore();
+		drawFrame(ctx2,view);
     })();/**/
 //*/
     (()=>{
@@ -121,6 +142,7 @@ requirejs(["helper/dom","helper/view"],function(dom,View){
         view.applyTransform(ctx2);
         draw(ctx2);
         ctx2.restore();
+		drawFrame(ctx2,view);
         
     })();/**/
     
