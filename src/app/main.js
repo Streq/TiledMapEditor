@@ -3,14 +3,14 @@ requirejs(["map-editor",
 		   "helper/loop", 
 		   "templates/editor", 
 		   "helper/math",
-		   "helper/view"], 
+           "helper/file"], 
 		  function 
 		  ( MapEditor, 
 			Dom, 
 			Loop, 
 			template, 
 			Math2,
-			View) {
+            FileUtils) {
 	
 	
 	const dotLineStyle = (() => {
@@ -33,7 +33,36 @@ requirejs(["map-editor",
 	class Pencil {
 
 	}
-
+    
+    class View {
+        constructor(x,y,scale){
+            this.x=x;
+            this.y=y;
+            this.scale=scale;
+        }
+        
+        pixelToWorldPos(x,y){
+            return {
+                x: this.x + x/this.scale,
+                y: this.y + y/this.scale
+            };
+        }
+        worldPosToPixel(x,y){
+            return {
+                x: (-this.x + x)*this.scale,
+                y: (-this.y + y)*this.scale
+            };
+        }
+    }
+    
+    class TilesetController{
+        constructor(tileset, canvas){
+            this.selected = 0;
+        }
+    }
+    class MapController{
+        constructor(canvas){}
+    }
 	class Grid {
 		constructor(size, offset) {
 			this.size = size;
@@ -66,31 +95,40 @@ requirejs(["map-editor",
 			}
 			ctx.restore();
 		}
-		fixMousePos(pos, canvasOffset) {
-
-		}
 	}
 	class Editor {
 		constructor() {
 			this.root = template.cloneNode(true);
 			this.grid = new Grid(32, 0);
 			this.map = [];
-			this.view = {x:0,y:0,scale:1};
+            this.tileSet = [];
+			this.view = new View(10,0,2);
 			//this.view = new View({center:{x:0, y:0},halfDimensions:{x:600, y:400},viewPort:{x:0, y:0, w:1, h:1}});
 		}
 
-
-
+        getWorldMousePos(mouseEvent){
+            let pixel = Dom.getMousePos(mouseEvent, this.canvas);
+            let pos = this.view.pixelToWorldPos(pixel.x,pixel.y);
+            return pos;
+        }
+        getCanvasMousePos(mouseEvent){
+            let pixel = Dom.getMousePos(mouseEvent, this.canvas);
+            return pixel;
+        }
+        
+        
 		start(root) {
 			root = root || document.body;
 			/**@type {HTMLElement}*/
 			root.append(this.root);
 
-			let canvas = Dom.get("canvas", this.root);
+			//Map canvas
+            let canvas = Dom.get("canvas", this.root);
+            this.canvas = canvas;
 			canvas.addEventListener("mousedown",
 				/**@param {MouseEvent} click*/
 				(click) => {
-					let pos = Dom.getMousePos(click, canvas);
+                    let pos = this.getWorldMousePos(click);
 					this.map.push({
 						x: pos.x,
 						y: pos.y,
@@ -99,32 +137,61 @@ requirejs(["map-editor",
 					});
 				}
 			);
-			this.loop = new Loop.RAF(
+            
+            
+            //tileset canvas
+            let tilesetCanvas = Dom.get("tileset", this.root);
+            this.tilesetCanvas = tilesetCanvas;
+            
+            
+            this.loadTileSet("src/test/sample.tileset.info.json");
+			
+            this.loop = new Loop.RAF(
 				() => {
 
 				},
 				() => {
-					let ctx = canvas.getContext("2d"),
-						view = this.view;
-					ctx.clearRect(0, 0, canvas.width, canvas.height);
-					ctx.save();
-					ctx.scale(view.scale,view.scale);
-					ctx.translate(-view.x,-view.y);
-					ctx.fillStyle = "blue";
-					this.map.forEach(
-						(e) => {
-							ctx.fillRect(e.x, e.y, e.w, e.h);
-						}
-					);
-					ctx.restore();
-                    
-					this.grid.render(ctx,view);
+					this.renderMap();
+                    this.renderTileset();
 				}
 			);
-			/**@type {HTMLCanvasElement}*/
-			this.loop.start();
+            this.loop.start();
 
 		}
+        
+        loadTileSet(path){
+            FileUtils.readText(path)
+                .then((tilesetString) => {
+                    let tileset = JSON.parse(tilesetString);
+                    this.tileSet = tileset;
+                    return;
+                });
+        }
+        
+        renderMap(){
+            let canvas = this.canvas,
+                ctx = canvas.getContext("2d"),
+                view = this.view;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.save();
+            ctx.scale(view.scale,view.scale);
+            ctx.translate(-view.x,-view.y);
+            ctx.fillStyle = "blue";
+            this.map.forEach(
+                (e) => {
+                    ctx.fillRect(e.x, e.y, e.w, e.h);
+                }
+            );
+            ctx.restore();
+
+            this.grid.render(ctx,view);
+        }
+        renderTileset(){
+            if(this.tileSet){
+                
+            }
+        }
+        
 	}
 	new Editor().start();
 });
