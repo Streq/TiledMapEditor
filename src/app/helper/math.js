@@ -42,6 +42,9 @@ define(function () {
 			index2;
 	}
 
+	function compare(a,b,error){
+		return Math.abs(a-b)<error;
+	}
 	return {
 		approach: approach,
 		toRadians: toRadians,
@@ -51,6 +54,7 @@ define(function () {
 		clamp: clamp,
 		offsetNoRepeat: offsetNoRepeat,
 		offsetRepeat: offsetRepeat,
-		offsetBoomerang: offsetBoomerang
+		offsetBoomerang: offsetBoomerang,
+		compare: compare,
 	};
 });
