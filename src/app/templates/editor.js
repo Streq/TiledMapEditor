@@ -21,11 +21,16 @@ define(["helper/dom", "helper/file"], function (Dom, File) {
         }
 		
         .canvasColumn {
-            max-width: 600px;
+            
         }
 
         .inputColumn {
-            width: 35%;
+            
+        }
+        html, body {
+            width:  100%;
+            height: 100%;
+            margin: 0;
         }
     </style>
 	<div class="row">
@@ -42,14 +47,16 @@ define(["helper/dom", "helper/file"], function (Dom, File) {
 			<canvas 
 				app-id 		= "canvas"
 				tabindex	= "-1"
-				width  		= 600 
-				height 		= 400 
+				width  		= 1200 
+				height 		= 900 
 				style  		= "background-color:black"
 			></canvas>
 		</div>
+        `/*
 		<div class="column inputColumn">
 			<textarea app-id="exporttext"></textarea>
 		</div>
+        */+`
 		<br/>
 	</div>
 </div>

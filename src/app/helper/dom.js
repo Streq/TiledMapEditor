@@ -36,12 +36,23 @@ define(function () {
 			y: mouseEvent.clientY - rect.top
 		};
 	}
+    
+    function reloadScrollBar() {
+        document.documentElement.style.overflow = 'auto';  // firefox, chrome
+        document.body.scroll = "yes"; // ie only
+    }
 
+    function unloadScrollBar() {
+        document.documentElement.style.overflow = 'hidden';  // firefox, chrome
+        document.body.scroll = "no"; // ie only
+    }
 	return {
 		create: create,
 		get: get,
 		set: set,
 		inner: inner,
-		getMousePos: getMousePos
+		getMousePos: getMousePos,
+        reloadScrollBar: reloadScrollBar,
+        unloadScrollBar: unloadScrollBar
 	};
 });

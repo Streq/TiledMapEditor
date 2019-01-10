@@ -13,6 +13,8 @@ requirejs(["map-editor",
             FileUtils) {
 	
 	
+    Dom.unloadScrollBar();
+    
 	function makeDotLineStyle(color1,color2){
 		let canvas = document.createElement("canvas");
 		let ls = 1;
@@ -30,8 +32,8 @@ requirejs(["map-editor",
 		return ctx.createPattern(canvas, "repeat");
 	}
 	
-	const dotLineStyle = makeDotLineStyle("white","black");
-	const originDotLineStyle = makeDotLineStyle("red","black");
+	const dotLineStyle = makeDotLineStyle("#fff7","#0007");
+	const originDotLineStyle = makeDotLineStyle("#fff7","#0007");
 
 	
     
@@ -82,27 +84,31 @@ requirejs(["map-editor",
 				ctx.fillStyle = dotLineStyle;
 				for (i = 0; i < rows + 1; ++i) {
 					let y = i * gs;
-					ctx.save();
 					let wy = view.pixelToWorldPos(0,y+canvasGridY).y;
 					//if it's an axis change style
 					if(!Math.trunc(wy)){
-						ctx.fillStyle = originDotLineStyle;
-					}
-					ctx.fillRect(-gs, y, width + gs * 2, 1);
-					ctx.restore();
+						ctx.save();
+                        ctx.fillStyle = originDotLineStyle;
+                        ctx.fillRect(-gs, y-1, width + gs * 2, 3);
+                        ctx.restore();
+					}else{
+					   ctx.fillRect(-gs, y, width + gs * 2, 1);
+                    }
 					
 				}
 				for (i = 0; i < columns + 1; ++i) {
 					let x = i * gs;
-					ctx.save();
 					let wx = view.pixelToWorldPos(x+canvasGridX,0).x;
 					//if it's an axis change style
 					if(!Math.trunc(wx)){
-						ctx.fillStyle = originDotLineStyle;
+						ctx.save();
+                        ctx.fillStyle = originDotLineStyle;
+                        ctx.fillRect(x-1, -gs, 3, height + gs * 2);
+                        ctx.restore();
+					}else{
+                        ctx.fillRect(x, -gs, 1, height + gs * 2);
 					}
-					ctx.fillRect(x, -gs, 1, height + gs * 2);
-					ctx.restore();
-				
+					
 				}
 			}
 			ctx.restore();
@@ -119,10 +125,10 @@ requirejs(["map-editor",
 	class Editor {
 		constructor() {
 			this.root = template.cloneNode(true);
-			this.grid = new Grid(32, 0);
+			this.grid = new Grid(32, {x:0, y:0});
 			this.map = [];
             this.tileSet = [];
-			this.view = new View(-32*5,-32*5,1);
+			this.view = new View(-32*0,-32*0,1);
 			this.cursor = {x:0,y:0};
 			this.inputState = {
 				u:false,
@@ -218,6 +224,16 @@ requirejs(["map-editor",
             let tilesetCanvas = Dom.get("tileset", this.root);
             this.tilesetCanvas = tilesetCanvas;
             
+            function resizeCanvasToWIndow(canvas, percx, percy){
+                canvas.width= window.innerWidth*percx;
+                canvas.height= window.innerHeight*percy;
+            }
+            function resizeCanvases(){
+               resizeCanvasToWIndow(canvas,0.80,1); 
+               resizeCanvasToWIndow(tilesetCanvas,0.2,1); 
+            }
+            resizeCanvases();
+            window.addEventListener("resize",resizeCanvases);
             
             this.loadTileSet("src/test/sample.tileset.info.json");
 			
@@ -259,7 +275,7 @@ requirejs(["map-editor",
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.save();
             ctx.scale(view.scale,view.scale);
-            ctx.translate(-view.x,-view.y);
+            ctx.translate(Math.trunc(-view.x),Math.trunc(-view.y));
             ctx.fillStyle = "blue";
             this.map.forEach(
                 (e) => {
