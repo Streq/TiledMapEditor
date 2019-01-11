@@ -1,13 +1,11 @@
 requirejs(["helper/dom","tileset"],function(Dom,Ttileset){
     
-    let dom = Dom.create("<canvas id='tileset' width = 200 height = 200></canvas>");
-    document.body.appendChild(dom);
     /**@param {HTMLCanvasElement} canvas1*/
-    let canvas = Dom.get("tileset");
-    canvas.style.backgroundColor="red";
+    let canvas = Dom.create("<canvas id='tileset' width = 200 height = 200></canvas>");
+    document.body.appendChild(canvas);
 
     let tilesetData={
-        atlas:"tiles.png",
+        atlas:"assets/tiles.png",
         tileSize:16,
         data:[
             {name:"block"},
@@ -27,9 +25,10 @@ requirejs(["helper/dom","tileset"],function(Dom,Ttileset){
                     this.atlas = img;
                     resolve();
                 };
-                img.source = tilesetData.atlas;
-                
+                img.src = tilesetData.atlas;
             });
+            
+            this.tiles = tilesetData.data;
         }
         
         render(){
@@ -37,9 +36,8 @@ requirejs(["helper/dom","tileset"],function(Dom,Ttileset){
         }
     }
     
+    let tileset = new Tileset(canvas);
     
-    
-    let draw = (ctx)=>{
-    };
+    tileset.load(tilesetData).then(()=>tileset.render());
     
 });
