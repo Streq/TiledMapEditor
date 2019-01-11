@@ -34,15 +34,6 @@ define(["helper/dom", "helper/file"], function (Dom, File) {
         }
     </style>
 	<div class="row">
-		<div class="column">
-			<canvas 
-				app-id 		= "tileset"
-				tabindex	= "-1"
-				width  		= 160
-				height 		= 400 
-				style  		= "background-color:darkgrey;"
-			></canvas>
-		</div>
 		<div class="column canvasColumn">			
 			<canvas 
 				app-id 		= "canvas"
@@ -51,6 +42,18 @@ define(["helper/dom", "helper/file"], function (Dom, File) {
 				height 		= 900 
 				style  		= "background-color:black"
 			></canvas>
+		</div>
+		<div class="column">
+			<canvas 
+				app-id 		= "tileset"
+				tabindex	= "-1"
+				width  		= 160
+				height 		= 400 
+				style  		= "background-color:darkgrey;"
+			></canvas>
+            <div>
+                <button app-id="export">export</button>
+            </div>
 		</div>
         `/*
 		<div class="column inputColumn">

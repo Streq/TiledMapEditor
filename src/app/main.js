@@ -229,14 +229,13 @@ requirejs(["map-editor",
                 canvas.height= window.innerHeight*percy;
             }
             function resizeCanvases(){
-               resizeCanvasToWIndow(canvas,0.80,1); 
-               resizeCanvasToWIndow(tilesetCanvas,0.2,1); 
+               resizeCanvasToWIndow(canvas,0.8,1); 
+               resizeCanvasToWIndow(tilesetCanvas,0.2,0.3); 
             }
             resizeCanvases();
             window.addEventListener("resize",resizeCanvases);
             
-            this.loadTileSet("src/test/sample.tileset.info.json");
-			
+            
             this.loop = new Loop.RAF(
 				(dt) => {
 					let d = {
@@ -255,15 +254,6 @@ requirejs(["map-editor",
             this.loop.start();
 
 		}
-        
-        loadTileSet(path){
-            FileUtils.readText(path)
-                .then((tilesetString) => {
-                    let tileset = JSON.parse(tilesetString);
-                    this.tileSet = tileset;
-                    return;
-                });
-        }
         
         renderMap(){
             let canvas = this.canvas,
@@ -288,6 +278,7 @@ requirejs(["map-editor",
             ctx.restore();
 			this.grid.render(ctx,view);
         }
+        
         renderTileset(){
             if(this.tileSet){
                 
