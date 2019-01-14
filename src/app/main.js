@@ -164,13 +164,16 @@ requirejs(["map-editor",
 				/**@param {MouseEvent} click*/
 				(click) => {
                     let pos = this.grid.getTileAtPosition(this.getWorldMousePos(click));
-					
-					this.map.push({
-						x: pos.x,
-						y: pos.y,
-						w: this.grid.size,
-						h: this.grid.size
-					});
+					let s = this.tileSet.selected;
+					if(s){
+                        this.map.push({
+                            x: pos.x,
+                            y: pos.y,
+                            w: this.grid.size,
+                            h: this.grid.size,
+                            tile:s
+                        });
+                    }
 				}
 			);
 			
@@ -277,20 +280,39 @@ requirejs(["map-editor",
                 view = this.view,
 				cc = this.cursor,
 				wc = this.view.pixelToWorldPos(cc.x,cc.y),
-				gs = this.grid.size;
+				gs = this.grid.size,
+                atlas = this.tileSet.atlas;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.save();
             ctx.scale(view.scale,view.scale);
             ctx.translate(Math.trunc(-view.x),Math.trunc(-view.y));
-            ctx.fillStyle = "blue";
+            
+            let ts = this.tileSet.unitSize;
+            
             this.map.forEach(
                 (e) => {
-                    ctx.fillRect(e.x, e.y, e.w, e.h);
+                    let sx = e.tile.x*ts,
+                        sy = e.tile.y*ts,
+                        sw = (e.tile.w||1)*ts, 
+                        sh = (e.tile.h||1)*ts;
+                    ctx.drawImage(atlas, sx, sy, sw, sh, e.x, e.y, e.w, e.h);
                 }
             );
 			
-            let fixedPos = this.grid.getTileAtPosition(wc);
-            ctx.fillRect(fixedPos.x, fixedPos.y, gs, gs);
+            let selected = this.tileSet.selected;
+            
+            if(selected){
+                let e = selected;
+                let sx = e.x*ts,
+                    sy = e.y*ts,
+                    sw = (e.w||1)*ts, 
+                    sh = (e.h||1)*ts;
+                let fixedPos = this.grid.getTileAtPosition(wc);
+            
+                ctx.drawImage(atlas, sx, sy, sw, sh, fixedPos.x, fixedPos.y, gs, gs);
+            
+            }
+            
             ctx.restore();
 			this.grid.render(ctx,view);
         }

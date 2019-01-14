@@ -22,9 +22,35 @@ define(["helper/dom"],function (Dom) {
     
     
     return class Tileset{
+        /**@param {HTMLCanvasElement}canvas*/
         constructor(canvas){
             this.canvas = canvas;
 			this.ctx = this.canvas.getContext("2d");
+            this.selected = null;
+            canvas.addEventListener("click",(e)=>{
+                let xy = Dom.getMousePos(event,canvas);
+                this.selected = this.getTileAtCanvasPos(xy.x,xy.y);
+            });
+        }
+        
+        getTileAtCanvasPos(x,y){
+            x = x/this.unitSize;
+            y = y/this.unitSize;
+            let selected = null;
+            let ox=0,oy=0
+			this.tiles.forEach((e)=>{
+				let w = (e.w||1),
+					h = (e.h||1);
+				let inside = ox < x && ox + w > x &&
+                             oy < y && oy + h > y;
+                if(inside){
+                    selected = e;
+                }
+				ox+=w;
+			});
+            
+            
+            return selected;
         }
         
         
@@ -53,11 +79,22 @@ define(["helper/dom"],function (Dom) {
 					h = (e.h||1)*this.unitSize;
 				
 				ctx.drawImage(this.atlas,x,y,w,h,ox,oy,w,h);
-				ox+=w;
+				
+                if(this.selected == e){
+                    let x = e.x*this.unitSize,
+                        y = e.y*this.unitSize,
+                        w = (e.w||1)*this.unitSize,
+                        h = (e.h||1)*this.unitSize;
+                    ctx.save();
+                    ctx.lineWidth = 1;
+                    ctx.strokeStyle = "magenta";
+                    ctx.strokeRect(ox,oy,w,h);
+                    ctx.restore();
+                }
+                
+                ox+=w;
+                
 			});
         }
-		getTile(){
-			
-		}
     }
 });
