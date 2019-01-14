@@ -3,14 +3,16 @@ requirejs(["map-editor",
 		   "helper/loop", 
 		   "templates/editor", 
 		   "helper/math",
-           "helper/file"], 
+           "helper/file",
+           "tileset"], 
 		  function 
 		  ( MapEditor, 
 			Dom, 
 			Loop, 
 			template, 
 			Math2,
-            FileUtils) {
+            FileUtils,
+            Tileset) {
 	
 	
     Dom.unloadScrollBar();
@@ -125,9 +127,8 @@ requirejs(["map-editor",
 	class Editor {
 		constructor() {
 			this.root = template.cloneNode(true);
-			this.grid = new Grid(32, {x:0, y:0});
+			this.grid = new Grid(16, {x:0, y:0});
 			this.map = [];
-            this.tileSet = [];
 			this.view = new View(-32*0,-32*0,1);
 			this.cursor = {x:0,y:0};
 			this.inputState = {
@@ -224,6 +225,21 @@ requirejs(["map-editor",
             let tilesetCanvas = Dom.get("tileset", this.root);
             this.tilesetCanvas = tilesetCanvas;
             
+            let tilesetData={
+                atlas:"assets/tiles.png",
+                tileSize:16,
+                data:[
+                    {name:"block", x:0, y:0},
+                    {name:"platform", x:1, y:0},
+                    {name:"miniblock", x:8, y:0},
+                    {name:"portal", x:7, y:2},
+                    {name:"spikes", x:9, y:1},
+                    {name:"lava", x:1, y:1},
+
+                ]
+            }
+            this.tileSet = new Tileset(tilesetCanvas);
+            this.tileSet.load(tilesetData);
             function resizeCanvasToWIndow(canvas, percx, percy){
                 canvas.width= window.innerWidth*percx;
                 canvas.height= window.innerHeight*percy;
@@ -281,7 +297,7 @@ requirejs(["map-editor",
         
         renderTileset(){
             if(this.tileSet){
-                
+                this.tileSet.render();
             }
         }
         
