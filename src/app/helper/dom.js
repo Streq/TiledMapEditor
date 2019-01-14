@@ -46,6 +46,48 @@ define(function () {
         document.documentElement.style.overflow = 'hidden';  // firefox, chrome
         document.body.scroll = "no"; // ie only
     }
+	
+	
+	/**
+	 * Load some dang image, then pass it to a callback;
+	 * @param {String} src - the image path,
+	 * @param {function(Image img)} [onload] - function to execute once the image is loaded.
+	 */
+	function loadImage(src, onload){
+		onload = onload || (x => x);
+		return new Promise((resolve) => {
+			var img = document.createElement("img");
+			img.onload = () => resolve(onload(img));
+			img.src = src;
+		});
+	}
+	/**
+	 * Load some dang images;
+	 * @function
+	 * @param {String[]} srcs - the images paths,
+	 * @param {function(loadImages~ImageMap imgs)}[onload] - function to execute once all images are loaded.
+	 */
+	function loadImages(srcs, onload){
+		onload = onload || (x => x);
+		var imgs = {};
+		function loadAndAdd(src){
+			return loadImage(src, img => {imgs[src] = img;});
+		}
+		return Promise.all(srcs.map(loadAndAdd))
+			.then(() => onload(imgs));
+	}
+	
+	/**
+	 * Load some dang json, then pass it to a callback;
+	 * @param {String} src - the json path,
+	 * @param {function(Object json)} onload - function to execute once the json is loaded.
+	 */
+	function loadJSON(src, onload){
+		onload = onload || (x => x);
+		return fetch(src)
+			.then(response => response.json())
+			.then(json => onload(json));
+	}
 	return {
 		create: create,
 		get: get,
@@ -53,6 +95,9 @@ define(function () {
 		inner: inner,
 		getMousePos: getMousePos,
         reloadScrollBar: reloadScrollBar,
-        unloadScrollBar: unloadScrollBar
+        unloadScrollBar: unloadScrollBar,
+		loadImg: loadImage,
+		loadImgs: loadImages,
+		loadJSON: loadJSON
 	};
 });
