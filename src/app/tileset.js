@@ -29,7 +29,8 @@ define(["helper/dom"],function (Dom) {
             this.selected = null;
             canvas.addEventListener("click",(e)=>{
                 let xy = Dom.getMousePos(event,canvas);
-                this.selected = this.getTileAtCanvasPos(xy.x,xy.y);
+                let selected = this.getTileAtCanvasPos(xy.x,xy.y);
+				this.selected = this.tiles.indexOf(selected);
             });
         }
         
@@ -72,7 +73,7 @@ define(["helper/dom"],function (Dom) {
 			ctx.fillRect(0,0,this.canvas.width,this.canvas.height);
 			
 			let ox=0,oy=0
-			this.tiles.forEach((e)=>{
+			this.tiles.forEach((e,index)=>{
 				let x = e.x*this.unitSize,
 					y = e.y*this.unitSize,
 					w = (e.w||1)*this.unitSize,
@@ -80,7 +81,7 @@ define(["helper/dom"],function (Dom) {
 				
 				ctx.drawImage(this.atlas,x,y,w,h,ox,oy,w,h);
 				
-                if(this.selected == e){
+                if(this.selected == index){
                     let x = e.x*this.unitSize,
                         y = e.y*this.unitSize,
                         w = (e.w||1)*this.unitSize,

@@ -149,7 +149,19 @@ requirejs(["map-editor",
             return pixel;
         }
         
-        
+		
+		export(map){
+			return map.map((e)=>{
+				return {
+					x: e.x,
+					y: e.y,
+					w: e.w,
+					h: e.h,
+					tile: this.tileSet.tiles[e.tile].name,
+				};
+			});
+		}
+		
 		start(root) {
 			root = root || document.body;
 			/**@type {HTMLElement}*/
@@ -164,18 +176,33 @@ requirejs(["map-editor",
 				/**@param {MouseEvent} click*/
 				(click) => {
                     let pos = this.grid.getTileAtPosition(this.getWorldMousePos(click));
-					let s = this.tileSet.selected;
-					if(s){
-                        this.map.push({
+					let index = this.tileSet.selected;
+					let s = this.tileSet.tiles[index];
+                    if(s){
+						this.map.push({
                             x: pos.x,
                             y: pos.y,
                             w: this.grid.size,
                             h: this.grid.size,
-                            tile:s
+                            tile:index
                         });
                     }
 				}
 			);
+			
+			canvas.addEventListener("copy",
+				/**@param {ClipboardEvent} click*/
+				(copy) => {
+                    copy.clipboardData.setData('text/plain', JSON.stringify(this.export(this.map)));
+					copy.preventDefault();
+				}
+			);
+			
+			Dom.get("export").addEventListener("click",
+		  		(e)=>{
+					navigator.clipboard.writeText(JSON.stringify(this.export(this.map)));
+				}
+		  	)
 			
 			//move view
 			canvas.addEventListener("keydown",
@@ -291,18 +318,19 @@ requirejs(["map-editor",
             
             this.map.forEach(
                 (e) => {
-                    let sx = e.tile.x*ts,
-                        sy = e.tile.y*ts,
-                        sw = (e.tile.w||1)*ts, 
-                        sh = (e.tile.h||1)*ts;
+                    let tile = this.tileSet.tiles[e.tile],
+						sx = tile.x*ts,
+                        sy = tile.y*ts,
+                        sw = (tile.w||1)*ts, 
+                        sh = (tile.h||1)*ts;
                     ctx.drawImage(atlas, sx, sy, sw, sh, e.x, e.y, e.w, e.h);
                 }
             );
 			
             let selected = this.tileSet.selected;
             
-            if(selected){
-                let e = selected;
+			let e = this.tileSet.tiles[selected];
+            if(e){
                 let sx = e.x*ts,
                     sy = e.y*ts,
                     sw = (e.w||1)*ts, 
