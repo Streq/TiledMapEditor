@@ -162,6 +162,19 @@ requirejs(["map-editor",
 			});
 		}
 		
+        import(map){
+			return map.map((e)=>{
+				let index = this.tileSet.tiles.findIndex((each)=>each.name==e.tile);
+                return {
+					x: e.x,
+					y: e.y,
+					w: e.w,
+					h: e.h,
+					tile: index,
+				};
+			});
+		}
+        
 		start(root) {
 			root = root || document.body;
 			/**@type {HTMLElement}*/
@@ -192,9 +205,18 @@ requirejs(["map-editor",
 			
 			canvas.addEventListener("copy",
 				/**@param {ClipboardEvent} click*/
-				(copy) => {
-                    copy.clipboardData.setData('text/plain', JSON.stringify(this.export(this.map)));
-					copy.preventDefault();
+				(e)=>{
+					navigator.clipboard.writeText(JSON.stringify(this.export(this.map)));
+				}
+			);
+			Dom.get("import").addEventListener("click",
+		  		/**@param {ClipboardEvent} click*/
+				(e)=>{
+					navigator.clipboard.readText().then((text)=>{
+                        this.import(JSON.parse(text)).forEach(
+                            (each)=>this.map.push(each)
+                        );
+                    });
 				}
 			);
 			
@@ -263,6 +285,7 @@ requirejs(["map-editor",
                     {name:"platform", x:1, y:0},
                     {name:"miniblock", x:8, y:0},
                     {name:"portal", x:7, y:2},
+                    {name:"end portal", x:0, y:2},
                     {name:"spikes", x:9, y:1},
                     {name:"lava", x:1, y:1},
 

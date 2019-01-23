@@ -53,6 +53,7 @@ define(["helper/dom", "helper/file"], function (Dom, File) {
 			></canvas>
             <div>
                 <button app-id="export">export</button>
+                <button app-id="import">import</button>
             </div>
 		</div>
         `/*
