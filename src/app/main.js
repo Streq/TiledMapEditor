@@ -132,10 +132,10 @@ requirejs(["map-editor",
 			this.view = new View(-32*0,-32*0,1);
 			this.cursor = {x:0,y:0};
 			this.inputState = {
-				u:false,
-				d:false,
-				l:false,
-				r:false
+				u: false,
+				d: false,
+				l: false,
+				r: false
 			}
 		}
 
@@ -175,6 +175,20 @@ requirejs(["map-editor",
 			});
 		}
         
+        toClipboard(map){
+            navigator.clipboard.writeText(JSON.stringify(this.export(map)));
+        }
+        
+        fromClipboard(){
+            /**@param {ClipboardEvent} click*/
+            navigator.clipboard.readText().then((text)=>{
+                this.import(JSON.parse(text)).forEach(
+                    (each)=>this.map.push(each)
+                );
+            });
+        }
+        
+        
 		start(root) {
 			root = root || document.body;
 			/**@type {HTMLElement}*/
@@ -186,7 +200,11 @@ requirejs(["map-editor",
 			
 			//click to instantiate
 			canvas.addEventListener("click",
-				/**@param {MouseEvent} click*/
+				(click)=>this.currentClickHandle(click)
+			);
+			
+            this.currentClickHandle = 
+                /**@param {MouseEvent} click*/
 				(click) => {
                     let pos = this.grid.getTileAtPosition(this.getWorldMousePos(click));
 					let index = this.tileSet.selected;
@@ -200,30 +218,15 @@ requirejs(["map-editor",
                             tile:index
                         });
                     }
-				}
-			);
+				};
+            
 			
-			canvas.addEventListener("copy",
-				/**@param {ClipboardEvent} click*/
-				(e)=>{
-					navigator.clipboard.writeText(JSON.stringify(this.export(this.map)));
-				}
-			);
 			Dom.get("import").addEventListener("click",
-		  		/**@param {ClipboardEvent} click*/
-				(e)=>{
-					navigator.clipboard.readText().then((text)=>{
-                        this.import(JSON.parse(text)).forEach(
-                            (each)=>this.map.push(each)
-                        );
-                    });
-				}
+		  		()=>this.fromClipboard()
 			);
 			
 			Dom.get("export").addEventListener("click",
-		  		(e)=>{
-					navigator.clipboard.writeText(JSON.stringify(this.export(this.map)));
-				}
+		  		()=>this.toClipboard(this.map)
 		  	)
 			
 			//move view
@@ -243,6 +246,16 @@ requirejs(["map-editor",
 						case "d":
 							this.inputState.r=true;
 							break;
+                        case "c":
+                            if(e.ctrlKey){
+                                this.toClipboard(this.map);
+                            }
+                            break;
+                        case "v":
+                            if(e.ctrlKey){
+                                this.fromClipboard();
+                            }
+                            break;
 					}
 				}
 			);
@@ -265,6 +278,8 @@ requirejs(["map-editor",
 					}
 				}
 			);
+            
+            
 			//update cursor position
 			canvas.addEventListener("mousemove",
 				/**@param {MouseEvent} mouse*/
