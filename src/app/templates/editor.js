@@ -56,9 +56,9 @@ define(["helper/dom", "helper/file"], function (Dom, File) {
                 <button app-id="import">import</button>
             </div>
 			<div>
-                <input type="radio" name="tool" checked> pencil
-				<input type="radio" name="tool"> rect
-				<input type="radio" name="tool"> eraser
+                <input type="radio" name="tool" checked> pencil<br>
+				<input type="radio" name="tool"> rect<br>
+				<input type="radio" name="tool"> eraser<br>
 				<input type="radio" name="tool"> select
             </div>
 		</div>
