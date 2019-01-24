@@ -38,8 +38,8 @@ define(["helper/dom", "helper/file"], function (Dom, File) {
 			<canvas 
 				app-id 		= "canvas"
 				tabindex	= "-1"
-				width  		= 1200 
-				height 		= 900 
+				width  		= 100
+				height 		= 100 
 				style  		= "background-color:black"
 			></canvas>
 		</div>
@@ -47,20 +47,22 @@ define(["helper/dom", "helper/file"], function (Dom, File) {
 			<canvas 
 				app-id 		= "tileset"
 				tabindex	= "-1"
-				width  		= 160
-				height 		= 400 
+				width  		= 100
+				height 		= 100 
 				style  		= "background-color:darkgrey;"
 			></canvas>
             <div>
                 <button app-id="export">export</button>
                 <button app-id="import">import</button>
             </div>
+			<div>
+                <input type="radio" name="tool" checked> pencil
+				<input type="radio" name="tool"> rect
+				<input type="radio" name="tool"> eraser
+				<input type="radio" name="tool"> select
+            </div>
 		</div>
-        `/*
-		<div class="column inputColumn">
-			<textarea app-id="exporttext"></textarea>
-		</div>
-        */+`
+        
 		<br/>
 	</div>
 </div>
