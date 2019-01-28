@@ -131,6 +131,7 @@ requirejs(["map-editor",
 			this.map = [];
 			this.view = new View(-32*0,-32*0,1);
 			this.cursor = {x:0,y:0};
+            this.renderGrid = true;
 			this.inputState = {
 				u: false,
 				d: false,
@@ -228,7 +229,15 @@ requirejs(["map-editor",
 			Dom.get("export").addEventListener("click",
 		  		()=>this.toClipboard(this.map)
 		  	)
-			
+            let editor = this;
+			Dom.get("renderGrid").addEventListener('change', function () {
+                    if (this.checked) {
+                        editor.renderGrid=true;
+                    } else {
+                        editor.renderGrid=false;
+                    }
+                }
+            );
 			//move view
 			canvas.addEventListener("keydown",
 				/**@param {KeyboardEvent} e*/
@@ -380,8 +389,10 @@ requirejs(["map-editor",
             }
             
             ctx.restore();
-			this.grid.render(ctx,view);
-        }
+            if(this.renderGrid){
+                this.grid.render(ctx,view);
+            }
+		}
         
         renderTileset(){
             if(this.tileSet){

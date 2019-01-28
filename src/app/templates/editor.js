@@ -61,6 +61,7 @@ define(["helper/dom", "helper/file"], function (Dom, File) {
 				<input type="radio" name="tool"> eraser<br>
 				<input type="radio" name="tool"> select
             </div>
+            <input type="checkbox" app-id = "renderGrid" checked/>render grid
 		</div>
         
 		<br/>
