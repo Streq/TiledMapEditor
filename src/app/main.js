@@ -124,6 +124,74 @@ requirejs(["map-editor",
 		}
 		
 	}
+    
+    let pencilTool = {
+        eventHandlers: {
+            /** @param {MouseEvent} click
+                @this Editor */
+            mousedown(click, editor, state){
+                let pos = this.grid.getTileAtPosition(this.getWorldMousePos(click));
+                let index = this.tileSet.selected;
+                let s = this.tileSet.tiles[index];
+                if(s){
+                    this.map.push({
+                        x: pos.x,
+                        y: pos.y,
+                        w: this.grid.size,
+                        h: this.grid.size,
+                        tile:index
+                    });
+                }
+            },
+            /** @param {MouseEvent} click
+                @this Editor */
+            mouseup(click, editor, state){
+                let pos = this.grid.getTileAtPosition(this.getWorldMousePos(click));
+                let index = this.tileSet.selected;
+                let s = this.tileSet.tiles[index];
+                if(s){
+                    this.map.push({
+                        x: pos.x,
+                        y: pos.y,
+                        w: this.grid.size,
+                        h: this.grid.size,
+                        tile:index
+                    });
+                }
+            },
+            mousemove(click, editor, state){
+                
+            }
+        },
+        /** @param {MouseEvent} click
+            @this Editor */
+        update(dt){
+            let pos = this.grid.getTileAtPosition(this.getWorldMousePos(click));
+            let index = this.tileSet.selected;
+            let s = this.tileSet.tiles[index];
+            if(s){
+                this.map.push({
+                    x: pos.x,
+                    y: pos.y,
+                    w: this.grid.size,
+                    h: this.grid.size,
+                    tile:index
+                });
+            }
+        },
+        render(ctx,view){
+            
+        },
+        
+        state:{
+            mousedown: false,
+            newPos: true,
+            position: {x:0,y:0}
+        }
+
+    }
+    
+    
 	class Editor {
 		constructor() {
 			this.root = template.cloneNode(true);
