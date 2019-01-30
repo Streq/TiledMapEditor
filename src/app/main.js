@@ -125,6 +125,63 @@ requirejs(["map-editor",
         }
 
         let Tools = (() => {
+            
+            function instantiate(editor, pos) {
+                let tile = editor.getTileFromWorldPosition(pos);
+                let index = editor.tileSet.selected;
+                let s = editor.tileSet.tiles[index];
+                if (s) {
+                    editor.map.push({
+                        x: tile.x,
+                        y: tile.y,
+                        w: editor.grid.size,
+                        h: editor.grid.size,
+                        tile: index
+                    });
+                }
+            }
+            
+            /** @param {Editor} editor
+                @param {{x:number,y:number}} pos0
+                @param {{x:number,y:number}} pos1
+            */
+            function lineToTiles(editor, pos0, pos1){
+                let gs = editor.grid.size;
+                let tile0 = editor.getTileFromWorldPosition(pos0);
+                let tile1 = editor.getTileFromWorldPosition(pos1);
+                if(tile0.x==tile1.x && tile0.y==tile1.y){
+                    return instantiate(editor,tile0);
+                }
+                let
+                    x0 = tile0.x,
+                    y0 = tile0.y,
+                    x1 = tile1.x,
+                    y1 = tile1.y,
+                    dx = x1-x0,
+                    dy = y1-y0;
+                    
+                
+                let horizontal = Math.abs(dx)>Math.abs(dy);
+                if(horizontal){
+                    let backwards = dx<0;
+                    let stepy = dy/Math.abs(dx)*gs;
+                    let stepx = backwards ? -gs:gs;
+                    let i;
+                    for(i = 1; i <= dx/stepx; i++){
+                        instantiate(editor,{x:x0+stepx*i, y:y0+stepy*i});
+                    }
+                }else{
+                    let backwards = dy<0;
+                    let stepy = backwards ? -gs:gs;
+                    let stepx = dx/Math.abs(dy)*gs;
+                    let i;
+                    for(i = 1; i <= dy/stepy; i += 1){
+                        instantiate(editor,{x:x0+stepx*i, y:y0+stepy*i});
+                    }
+                }
+                
+            }
+            
             let Pencil = (() => {
                 let eventHandlers = {
                     /** @param {MouseEvent} click*/
@@ -139,6 +196,16 @@ requirejs(["map-editor",
                     /** @param {MouseEvent} click*/
                     mousemove(click, editor, state) {
                         state.screenPosition = editor.getCanvasMousePos(click);
+                        let oldpos = state.worldPosition;
+                        let sp = state.screenPosition;
+                        let newpos = editor.getTileFromCanvasPixel(sp);
+                        if (oldpos.x != newpos.x || oldpos.y != newpos.y) {
+                            state.worldPosition = newpos;
+                            if (state.mousedown) {
+                                //instantiate(editor, state.worldPosition);
+                                lineToTiles(editor,oldpos,newpos);
+                            }
+                        }
                     },
 
                 }
@@ -157,20 +224,7 @@ requirejs(["map-editor",
                     };
                 }
 
-                function instantiate(editor, pos) {
-                    pos = editor.grid.getTileAtPosition(pos);
-                    let index = editor.tileSet.selected;
-                    let s = editor.tileSet.tiles[index];
-                    if (s) {
-                        editor.map.push({
-                            x: pos.x,
-                            y: pos.y,
-                            w: editor.grid.size,
-                            h: editor.grid.size,
-                            tile: index
-                        });
-                    }
-                }
+                
 
                 return class Pencil {
                     constructor() {
@@ -178,15 +232,7 @@ requirejs(["map-editor",
                         this.state = createState();
                     }
                     update(dt, editor) {
-                        let oldpos = this.state.worldPosition;
-                        let sp = this.state.screenPosition;
-                        let newpos = editor.grid.getTileAtPosition(editor.view.pixelToWorldPos(sp.x, sp.y));
-                        if (oldpos.x != newpos.x || oldpos.y != newpos.y) {
-                            this.state.worldPosition = newpos;
-                            if (this.state.mousedown) {
-                                instantiate(editor, this.state.worldPosition);
-                            }
-                        }
+                        
                     }
                 }
             })();
@@ -201,18 +247,7 @@ requirejs(["map-editor",
             /** @param {MouseEvent} click
                 @this Editor */
             update(dt) {
-                let pos = this.grid.getTileAtPosition(this.getWorldMousePos(click));
-                let index = this.tileSet.selected;
-                let s = this.tileSet.tiles[index];
-                if (s) {
-                    this.map.push({
-                        x: pos.x,
-                        y: pos.y,
-                        w: this.grid.size,
-                        h: this.grid.size,
-                        tile: index
-                    });
-                }
+                
             },
             render(ctx, view) {
 
@@ -254,14 +289,22 @@ requirejs(["map-editor",
 
             getWorldMousePos(mouseEvent) {
                 let pixel = Dom.getMousePos(mouseEvent, this.canvas);
-                let pos = this.view.pixelToWorldPos(pixel.x, pixel.y);
-                return pos;
+                return this.getWorldPosFromCanvasPixel(pixel);
             }
             getCanvasMousePos(mouseEvent) {
-                let pixel = Dom.getMousePos(mouseEvent, this.canvas);
-                return pixel;
+                return Dom.getMousePos(mouseEvent, this.canvas);
             }
-
+            
+            getWorldPosFromCanvasPixel(pixel) {
+                return this.view.pixelToWorldPos(pixel.x, pixel.y);
+            }
+            getTileFromCanvasPixel(pixel) {
+                let pos = this.getWorldPosFromCanvasPixel(pixel);
+                return this.getTileFromWorldPosition(pos);
+            }
+            getTileFromWorldPosition(pos) {
+                return this.grid.getTileAtPosition(pos);
+            }
 
             export (map) {
                 return map.map((e) => {
