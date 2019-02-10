@@ -55,11 +55,8 @@ define(["helper/dom", "helper/file"], function (Dom, File) {
                 <button app-id="export">export</button>
                 <button app-id="import">import</button>
             </div>
-			<div>
-                <input type="radio" name="tool" checked> pencil<br>
-				<input type="radio" name="tool"> rect<br>
-				<input type="radio" name="tool"> eraser<br>
-				<input type="radio" name="tool"> select
+			<div app-id="tools">
+                
             </div>
             <input type="checkbox" app-id = "renderGrid" checked/>render grid
 		</div>
