@@ -259,6 +259,13 @@ requirejs(["map-editor",
 						editor.renderGrid = false;
 					}
 				});
+                
+                let gridSize = Dom.get("gridSize");
+                gridSize.addEventListener('change', function () {
+				    editor.grid.size = this.value;
+				});
+                gridSize.value = this.grid.size;
+                
 				//move view
 				canvas.addEventListener("keydown",
 					/**@param {KeyboardEvent} e*/
@@ -361,6 +368,66 @@ requirejs(["map-editor",
 							x: 1,
 							y: 1
                         },
+						{
+							name: "slope0",
+							x: 0,
+							y: 5
+                        },
+						{
+							name: "slope1",
+							x: 1,
+							y: 5
+                        },
+						{
+							name: "slope2",
+							x: 2,
+							y: 5
+                        },
+						{
+							name: "slope3",
+							x: 3,
+							y: 5
+                        },
+						{
+							name: "slope4",
+							x: 0,
+							y: 6
+                        },
+						{
+							name: "slope5",
+							x: 1,
+							y: 6
+                        },
+						{
+							name: "slope6",
+							x: 2,
+							y: 6
+                        },
+						{
+							name: "slope7",
+							x: 3,
+							y: 6
+                        },
+						{
+							name: "slope8",
+							x: 4,
+							y: 6
+                        },
+						{
+							name: "slope9",
+							x: 5,
+							y: 6
+                        },
+						{
+							name: "slope10",
+							x: 6,
+							y: 6
+                        },
+						{
+							name: "slope11",
+							x: 7,
+							y: 6
+                        },
 
                 ]
 				}
@@ -438,7 +505,7 @@ requirejs(["map-editor",
 						sh = (e.h || 1) * ts;
 					let fixedPos = this.grid.getTileAtPosition(wc);
 
-					ctx.drawImage(atlas, sx, sy, sw, sh, fixedPos.x, fixedPos.y, gs, gs);
+					ctx.drawImage(atlas, sx, sy, sw, sh, fixedPos.x, fixedPos.y, sw, sh);
 
 				}
 

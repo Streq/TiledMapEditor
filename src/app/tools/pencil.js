@@ -4,11 +4,12 @@ define(function () {
 		let index = editor.tileSet.selected;
 		let s = editor.tileSet.tiles[index];
 		if (s) {
-			editor.map.push({
+			let us = editor.tileSet.unitSize;
+            editor.map.push({
 				x: tile.x,
 				y: tile.y,
-				w: editor.grid.size,
-				h: editor.grid.size,
+				w: us,
+				h: us,
 				tile: index
 			});
 		}

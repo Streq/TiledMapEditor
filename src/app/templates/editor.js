@@ -58,7 +58,8 @@ define(["helper/dom", "helper/file"], function (Dom, File) {
 			<div app-id="tools">
                 
             </div>
-            <input type="checkbox" app-id = "renderGrid" checked/>render grid
+            <input type="checkbox" app-id = "renderGrid" checked/>render grid <br>
+            <input type="number" app-id = "gridSize">grid Size
 		</div>
         
 		<br/>

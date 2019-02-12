@@ -42,7 +42,12 @@ define(["helper/dom"],function (Dom) {
 			this.tiles.forEach((e)=>{
 				let w = (e.w||1),
 					h = (e.h||1);
-				let inside = ox < x && ox + w > x &&
+				if(ox+w>this.canvas.width/this.unitSize){
+                    ox=0;
+                    oy+=h;
+                }
+                
+                let inside = ox < x && ox + w > x &&
                              oy < y && oy + h > y;
                 if(inside){
                     selected = e;
@@ -78,7 +83,12 @@ define(["helper/dom"],function (Dom) {
 					y = e.y*this.unitSize,
 					w = (e.w||1)*this.unitSize,
 					h = (e.h||1)*this.unitSize;
-				
+				if(ox+w>this.canvas.width){
+                    ox=0;
+                    oy+=h;
+                }
+                
+                
 				ctx.drawImage(this.atlas,x,y,w,h,ox,oy,w,h);
 				
                 if(this.selected == index){
@@ -94,7 +104,6 @@ define(["helper/dom"],function (Dom) {
                 }
                 
                 ox+=w;
-                
 			});
         }
     }
