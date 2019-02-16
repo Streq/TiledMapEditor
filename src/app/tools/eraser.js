@@ -9,7 +9,7 @@ define(function () {
 		let tile0 = editor.getTileFromWorldPosition(pos0);
 		let tile1 = editor.getTileFromWorldPosition(pos1);
 		if (tile0.x == tile1.x && tile0.y == tile1.y) {
-			return editor.instantiateAt(tile0);
+			return editor.deleteAt(tile0);
 		}
 		let
 			x0 = tile0.x,
@@ -27,7 +27,7 @@ define(function () {
 			let stepx = backwards ? -gs : gs;
 			let i;
 			for (i = 1; i <= dx / stepx; i++) {
-				editor.instantiateAt({
+				editor.deleteAt({
 					x: x0 + stepx * i,
 					y: y0 + stepy * i
 				});
@@ -38,7 +38,7 @@ define(function () {
 			let stepx = dx / Math.abs(dy) * gs;
 			let i;
 			for (i = 1; i <= dy / stepy; i += 1) {
-				editor.instantiateAt({
+				editor.deleteAt({
 					x: x0 + stepx * i,
 					y: y0 + stepy * i
 				});
@@ -48,25 +48,12 @@ define(function () {
 	}
 
 
-	function mouseMove(click, editor, state){
-		state.screenPosition = editor.getCanvasMousePos(click);
-		let sp = state.screenPosition;
-		let newpos = editor.getTileFromCanvasPixel(sp);
-		let oldpos = state.worldPosition;
-		if (oldpos.x != newpos.x || oldpos.y != newpos.y) {
-			state.worldPosition = newpos;
-			if (state.mousedown) {
-				//instantiateAt(editor, state.worldPosition);
-				lineToTiles(editor, oldpos, newpos);
-			}
-		}
-	}
 
 
 	let eventHandlers = {
 		/** @param {MouseEvent} click*/
 		mousedown(click, editor, state) {
-			editor.instantiateAt(editor.getWorldMousePos(click));
+			editor.deleteAt(editor.getWorldMousePos(click));
 			state.mousedown = true;
 		},
 		/** @param {MouseEvent} click*/
@@ -76,7 +63,6 @@ define(function () {
 		/** @param {MouseEvent} click*/
 		mousemove(click, editor, state) {
 			state.screenPosition = editor.getCanvasMousePos(click);
-			
 		},
 
 	};
@@ -104,11 +90,10 @@ define(function () {
 		}
 		update(dt, editor) {
 			let state = this.state;
+			let oldpos = state.worldPosition;
 			let sp = state.screenPosition;
 			let newpos = editor.getTileFromCanvasPixel(sp);
-			let oldpos = state.worldPosition;
 			if (oldpos.x != newpos.x || oldpos.y != newpos.y) {
-				//update mouse world position if view is moving
 				state.worldPosition = newpos;
 				if (state.mousedown) {
 					lineToTiles(editor, oldpos, newpos);
@@ -116,22 +101,17 @@ define(function () {
 			}
 		}
 		render(editor){
-			let selected = editor.tileSet.selected;
-			let ts = editor.tileSet.unitSize;
+			let ts = editor.grid.size;
 			let wc = this.state.worldPosition;
-			let e = editor.tileSet.tiles[selected];
-			let atlas = editor.tileSet.atlas;
-			if (e) {
-				let sx = e.x * ts,
-					sy = e.y * ts,
-					sw = (e.w || 1) * ts,
-					sh = (e.h || 1) * ts;
-				let fixedPos = editor.grid.getTileAtPosition(wc);
-
-				editor.ctx.drawImage(atlas, sx, sy, sw, sh, fixedPos.x, fixedPos.y, sw, sh);
-
-			}
-
+			let fixedPos = editor.grid.getTileAtPosition(wc);
+			/**@type {CanvasRenderingContext2D}*/
+			let ctx = editor.ctx;
+			
+			ctx.beginPath();
+			ctx.lineWidth = "1";
+			ctx.strokeStyle = "red";
+			ctx.rect(fixedPos.x, fixedPos.y, ts, ts); 
+			ctx.stroke();
 		}
 	}
 
