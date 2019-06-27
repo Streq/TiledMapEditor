@@ -1,38 +1,45 @@
-Data -> {
-	//user defined info
-}
-Map -> {
-	data: 		Data,
-	layers:		[Layer]
-}
-Instance -> {
-	position: 	Vector, 
-	scale:		Vector, 
-	object:		Object
-}
-Layer -> {
-	data:		Data,
-	instances:	[Instance]
-}
-Sprite -> {
-	src:		Image, 
-	rect:		Rect
-}
-Object -> {
-	data:		Data,
-	offset:		Vector,
-	dimensions:	Vector,
-	sprite:		Sprite|Color 
-}
-MapEditor -> {
-	map:		Map
-	tileSet:	[Object]
-	context:	Context
-	dom:		Dom
-}
+la idea es un editor que 
 
-Context -> {
-	view:		View,
-	gridSize:	Vector
-	
-}
+-reciba como parámetro:
+	-un set de tiles
+		-una imagen atlas
+		-una configuración que extraiga los sprites de cada tile del atlas
+		-info de cada tile(opcional)
+			-id
+			-data adicional
+-features:
+-mapa
+-selector de tile
+-edición con lapiz
+-borrado
+-selección rectangular
+-copiado
+-importación y exportación del clipboard
+-importación desde imagen
+	-se debe especificar un formato de mapeo pixel por objeto.
+-exportación
+	-formato truetilemap (retorna una grilla, la posición se puede calcular a partir del índice del objeto)
+	-formato objectList (retorna un array de objetos con sus coordenadas)
+-guardar y cargar archivos
+-un formato de importación
+
+
+
+por lo que la cosa seria asi
+
+secciones
+INPUTDATA
+"drop, paste or whatever your tileset here"
+"write, paste or whatever your config.json here"
+
+MAP
+el mapa ermano
+
+TOOLS SECTION
+un selector de tools + un área donde el tool activo hace visible su propia sección si hace falta
+
+CONFIG SECTION
+se configuran cosas generales como el tamaño de tile, la posición de la cámara etc
+
+TILESET SECTION
+muestra los tiles ordenaditos en la forma más espacioeficiente, permite seleccionar el tile actual
